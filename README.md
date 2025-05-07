@@ -2,6 +2,16 @@
 
 A minimal digital signage script that cycles through a user-defined URL schedule in full-screen Chromium kiosk mode.
 
+This implementation uses cron to check every minute whether the correct URL is being displayed. 
+If not, Chromium is killed (if necessary) and (re)started based on the scheduled defined in a file.
+This results in a relatively robust signage program that will work indefinitely.
+
+Depends on:
+- `bash`  
+- `chromium-browser`  
+- `cron` (`crontab`)  
+- `procps` (`pgrep`, `pkill`)
+
 ## How to use
 
 The schedule is defined in `signage_cron_schedule.txt`, e.g.:
