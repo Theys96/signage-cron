@@ -4,6 +4,7 @@
 SCHEDULE_FILE="$HOME/signage-cron/signage_cron_schedule.txt"
 LAST_URL_FILE="$HOME/signage-cron/signage_cron_last_url.txt"
 CHROMIUM_BIN="chromium-browser"
+CHROMIUM_PATTERN="chromium"
 CHROMIUM_FLAGS="
   --kiosk
   --incognito
@@ -48,12 +49,12 @@ done
 last_url=""
 [[ -f "$LAST_URL_FILE" ]] && last_url=$(<"$LAST_URL_FILE")
 
-if ! pgrep -f "$CHROMIUM_BIN" >/dev/null; then
+if ! pgrep -f "$CHROMIUM_PATTERN" >/dev/null; then
   last_url=""
 fi
 
 if [[ "$active_url" != "$last_url" ]]; then
-  pkill -f "$CHROMIUM_BIN"
+  pkill -f "$CHROMIUM_PATTERN"
   $CHROMIUM_BIN $CHROMIUM_FLAGS "$active_url" &
   echo "$active_url" > "$LAST_URL_FILE"
 fi
