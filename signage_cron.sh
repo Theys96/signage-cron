@@ -3,6 +3,7 @@
 ### CONFIGURATION ###
 SCHEDULE_FILE="$HOME/signage-cron/signage_cron_schedule.txt"
 LAST_URL_FILE="$HOME/signage-cron/signage_cron_last_url.txt"
+LAST_POS_FILE="$HOME/signage-cron/signage_cron_last_pos.txt"
 CHROMIUM_BIN="chromium-browser"
 CHROMIUM_PATTERN="chromium"
 CHROMIUM_FLAGS="
@@ -49,7 +50,11 @@ done
 last_url=""
 [[ -f "$LAST_URL_FILE" ]] && last_url=$(<"$LAST_URL_FILE")
 
-global_wrap=false
+last_pos=-1
+if [[ -f "$LAST_POS_FILE" ]]; then
+  last_pos=$(<"$LAST_POS_FILE")
+fi
+
 if (( pos < last_pos )); then
   last_url=""
 fi
@@ -62,4 +67,5 @@ if [[ "$active_url" != "$last_url" ]]; then
   pkill -f "$CHROMIUM_PATTERN"
   $CHROMIUM_BIN $CHROMIUM_FLAGS "$active_url" &
   echo "$active_url" > "$LAST_URL_FILE"
+  echo "$pos" > "$LAST_POS_FILE"
 fi
