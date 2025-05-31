@@ -50,18 +50,29 @@ done
 last_url=""
 [[ -f "$LAST_URL_FILE" ]] && last_url=$(<"$LAST_URL_FILE")
 
+# Reset if the end of the cycle is reached
 last_pos=-1
 if [[ -f "$LAST_POS_FILE" ]]; then
   last_pos=$(<"$LAST_POS_FILE")
 fi
-
 if (( pos < last_pos )); then
   last_url=""
 fi
 
+# Reset if Chromium is not running
 if ! pgrep -f "$CHROMIUM_PATTERN" >/dev/null; then
   last_url=""
 fi
+
+# Reset if the total duration is 1 minute
+if (( total == 1 )); then
+  last_url=""
+fi
+
+echo "Last pos: $last_pos"
+echo "Current pos: $pos"
+echo "Last URL: $last_url"
+echo "Active URL: $active_url"
 
 if [[ "$active_url" != "$last_url" ]]; then
   pkill -f "$CHROMIUM_PATTERN"
