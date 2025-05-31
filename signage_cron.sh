@@ -49,6 +49,11 @@ done
 last_url=""
 [[ -f "$LAST_URL_FILE" ]] && last_url=$(<"$LAST_URL_FILE")
 
+global_wrap=false
+if (( pos < last_pos )); then
+  last_url=""
+fi
+
 if ! pgrep -f "$CHROMIUM_PATTERN" >/dev/null; then
   last_url=""
 fi
