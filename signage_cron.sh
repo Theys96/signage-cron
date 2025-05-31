@@ -56,27 +56,26 @@ if [[ -f "$LAST_POS_FILE" ]]; then
   last_pos=$(<"$LAST_POS_FILE")
 fi
 if (( pos < last_pos )); then
+  echo "Resetting because the cycle position has reset"
   last_url=""
 fi
 
 # Reset if Chromium is not running
 if ! pgrep -f "$CHROMIUM_PATTERN" >/dev/null; then
+  echo "Resetting because Chromium is not running"
   last_url=""
 fi
 
 # Reset if the total duration is 1 minute
 if (( total == 1 )); then
+  echo "Resetting because of 1 minute total duration"
   last_url=""
 fi
-
-echo "Last pos: $last_pos"
-echo "Current pos: $pos"
-echo "Last URL: $last_url"
-echo "Active URL: $active_url"
 
 if [[ "$active_url" != "$last_url" ]]; then
   pkill -f "$CHROMIUM_PATTERN"
   $CHROMIUM_BIN $CHROMIUM_FLAGS "$active_url" &
   echo "$active_url" > "$LAST_URL_FILE"
-  echo "$pos" > "$LAST_POS_FILE"
 fi
+
+echo "$pos" > "$LAST_POS_FILE"
